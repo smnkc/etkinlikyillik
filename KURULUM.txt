@@ -1,0 +1,64 @@
+=== ORTAK TAKVİM SİSTEMİ KURULUM TALİMATLARI ===
+
+1. DOSYA YÜKLEME
+   - Tüm dosyaları hosting hesabınızın public_html klasörüne yükleyin
+   - File Manager veya FTP kullanabilirsiniz
+
+2. VERİTABANI KURULUMU
+   a) cPanel'e giriş yapın
+   b) "MySQL Databases" bölümüne gidin
+   c) Yeni veritabanı oluşturun (örn: yourusername_calendar)
+   d) Veritabanı kullanıcısı oluşturun
+   e) Kullanıcıyı veritabanına ekleyin (tüm yetkilerle)
+   f) phpMyAdmin'e gidin
+   g) Oluşturduğunuz veritabanını seçin
+   h) "Import" sekmesine gidin
+   i) "database.sql" dosyasını seçin ve import edin
+
+3. KONFİGÜRASYON
+   config.php dosyasını düzenleyin:
+   
+   define('DB_HOST', 'localhost');
+   define('DB_NAME', 'yourusername_calendar');  // Veritabanı adınız
+   define('DB_USER', 'yourusername_dbuser');   // Veritabanı kullanıcınız
+   define('DB_PASS', 'your_password');         // Veritabanı şifreniz
+   define('SITE_URL', 'http://yourdomain.com'); // Site URL'niz
+
+4. TEST
+   - Tarayıcınızda sitenizi açın
+   - Demo hesaplarla test edin:
+     * Admin: kullanıcı adı "admin", şifre "admin123"
+     * Kullanıcı: kullanıcı adı "kullanici1", şifre "admin123"
+
+5. GÜVENLİK
+   - Demo hesapların şifrelerini değiştirin
+   - Admin panelinden yeni kullanıcılar ekleyin
+   - Gereksiz demo hesapları silin
+
+6. SORUN GİDERME
+   - Beyaz sayfa: PHP error log'larını kontrol edin
+   - Veritabanı hatası: config.php ayarlarını kontrol edin
+   - CSS yüklenmiyor: dosya yollarını kontrol edin
+
+=== DEMO HESAPLAR ===
+Admin Hesabı:
+- Kullanıcı Adı: admin
+- Şifre: admin123
+- Yetki: Tam admin yetkisi
+
+Normal Kullanıcı:
+- Kullanıcı Adı: kullanici1
+- Şifre: admin123
+- Yetki: Sadece kendi etkinliklerini yönetme
+
+=== ÖNEMLİ NOTLAR ===
+- İlk kurulumdan sonra demo şifrelerini mutlaka değiştirin
+- config.php dosyasındaki güvenlik anahtarlarını değiştirin
+- Hosting sağlayıcınızın PHP ve MySQL versiyonlarını kontrol edin
+- SSL sertifikası kullanmanız önerilir
+
+=== DESTEK ===
+Sorun yaşarsanız:
+1. README.md dosyasını okuyun
+2. Hosting sağlayıcınızın error log'larını kontrol edin
+3. PHP ve MySQL versiyonlarını kontrol edin
