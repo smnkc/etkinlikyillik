@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: text/html; charset=utf-8');
 require_once 'config.php';
 
 // Zaten giriş yapmışsa ana sayfaya yönlendir
@@ -196,35 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #5a67d8;
         }
         
-        .demo-info {
-            background: #e6fffa;
-            border: 1px solid #81e6d9;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #234e52;
-        }
-        
-        .demo-info h4 {
-            margin: 0 0 10px 0;
-            color: #2c7a7b;
-        }
-        
-        .demo-credentials {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        
-        .demo-credential {
-            background: white;
-            padding: 8px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 0.85rem;
-        }
+
         
         @media (max-width: 480px) {
             .login-card {
@@ -235,9 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 font-size: 1.5rem;
             }
             
-            .demo-credentials {
-                grid-template-columns: 1fr;
-            }
+
         }
     </style>
 </head>
@@ -290,22 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </button>
             </form>
             
-            <div class="demo-info">
-                <h4><i class="fas fa-info-circle"></i> Demo Hesapları</h4>
-                <p>Test etmek için aşağıdaki hesapları kullanabilirsiniz:</p>
-                <div class="demo-credentials">
-                    <div class="demo-credential">
-                        <strong>Admin:</strong><br>
-                        Kullanıcı: admin<br>
-                        Şifre: admin123
-                    </div>
-                    <div class="demo-credential">
-                        <strong>Kullanıcı:</strong><br>
-                        Kullanıcı: kullanici1<br>
-                        Şifre: admin123
-                    </div>
-                </div>
-            </div>
+
             
             <div class="back-link">
                 <a href="index.php">
