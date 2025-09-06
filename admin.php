@@ -464,6 +464,9 @@ $total_events = $stmt->fetchColumn();
             <button class="nav-tab" onclick="showSection('events')">
                 <i class="fas fa-calendar-check"></i> Etkinlik Yönetimi
             </button>
+            <button class="nav-tab" onclick="showSection('reports')">
+                <i class="fas fa-file-pdf"></i> PDF Raporları
+            </button>
         </div>
         
         <!-- Kullanıcı Yönetimi -->
@@ -606,6 +609,74 @@ $total_events = $stmt->fetchColumn();
                 </div>
             </form>
         </div>
+        
+        <!-- PDF Raporları -->
+        <div id="reports" class="admin-section">
+            <h2 class="section-title">
+                <i class="fas fa-file-pdf"></i>
+                PDF Raporları
+            </h2>
+            
+            <!-- Rapor Oluşturma Formu -->
+            <div class="report-form" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; color: #2d3748;">Etkinlik Raporu Oluştur</h3>
+                <form method="GET" action="api/generate_report.php" target="_blank">
+                    <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: end;">
+                        <div class="form-group">
+                            <label for="report_year" style="display: block; margin-bottom: 5px; font-weight: 500;">Yıl:</label>
+                            <select id="report_year" name="year" required style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;">
+                                <?php
+                                $currentYear = date('Y');
+                                for ($year = $currentYear; $year >= $currentYear - 5; $year--) {
+                                    echo "<option value='$year'>$year</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="report_month" style="display: block; margin-bottom: 5px; font-weight: 500;">Ay (Opsiyonel):</label>
+                            <select id="report_month" name="month" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;">
+                                <option value="">Tüm Yıl</option>
+                                <option value="1">Ocak</option>
+                                <option value="2">Şubat</option>
+                                <option value="3">Mart</option>
+                                <option value="4">Nisan</option>
+                                <option value="5">Mayıs</option>
+                                <option value="6">Haziran</option>
+                                <option value="7">Temmuz</option>
+                                <option value="8">Ağustos</option>
+                                <option value="9">Eylül</option>
+                                <option value="10">Ekim</option>
+                                <option value="11">Kasım</option>
+                                <option value="12">Aralık</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="report_format" style="display: block; margin-bottom: 5px; font-weight: 500;">Format:</label>
+                            <select id="report_format" name="format" style="width: 100%; padding: 8px; border: 1px solid #e2e8f0; border-radius: 4px;">
+                                <option value="pdf">PDF</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-download"></i> Rapor İndir
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Rapor Açıklaması -->
+            <div class="report-info" style="background: #e6fffa; border: 1px solid #81e6d9; border-radius: 8px; padding: 15px;">
+                <h4 style="color: #234e52; margin-bottom: 10px;"><i class="fas fa-info-circle"></i> Rapor Hakkında</h4>
+                <ul style="color: #2d3748; margin: 0; padding-left: 20px;">
+                    <li>Seçilen dönemdeki tüm etkinlikler tarihe göre sıralı olarak listelenir</li>
+                    <li>Her etkinlik için başlık, tarih, saat, açıklama ve ekleyen kişi bilgileri yer alır</li>
+                    <li>Ay seçilmezse tüm yılın etkinlikleri raporlanır</li>
+                    <li>Rapor PDF formatında indirilir</li>
+                </ul>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -625,6 +696,19 @@ $total_events = $stmt->fetchColumn();
             document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
         }
         
+        function downloadReport() {
+            const year = document.getElementById('report_year').value;
+            const month = document.getElementById('report_month').value;
+            const format = document.getElementById('report_format').value;
+            
+            let url = `api/generate_report.php?year=${year}&format=${format}`;
+            if (month) {
+                url += `&month=${month}`;
+            }
+            
+            window.open(url, '_blank');
+        }
+        
         // Sayfa yüklendiğinde URL parametresine göre sekme aç
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -632,6 +716,8 @@ $total_events = $stmt->fetchColumn();
             
             if (tab === 'events') {
                 showSection('events');
+            } else if (tab === 'reports') {
+                showSection('reports');
             } else {
                 showSection('users'); // Varsayılan olarak kullanıcı yönetimi
             }

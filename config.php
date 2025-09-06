@@ -2,17 +2,17 @@
 // Veritabanı Bağlantı Konfigürasyonu
 // cPanel MySQL ayarlarınıza göre düzenleyin
 
-define('DB_HOST', 'localhost:8889'); // cPanel'de genellikle localhost
+define('DB_HOST', 'localhost'); // XAMPP için localhost
 define('DB_NAME', 'deneme'); // Veritabanı adınız
 define('DB_USER', 'root'); // cPanel'deki MySQL kullanıcı adınız
-define('DB_PASS', 'root'); // cPanel'deki MySQL şifreniz
+define('DB_PASS', ''); // XAMPP varsayılan şifre boş
 define('DB_CHARSET', 'utf8mb4');
 
 // Session ayarları
 define('SESSION_LIFETIME', 3600); // 1 saat
 
 // Site ayarları
-define('SITE_URL', 'http://localhost:8000'); // Sitenizin URL'si
+define('SITE_URL', 'http://localhost/deneme'); // XAMPP için URL
 define('SITE_NAME', 'Ortak Takvim Sistemi');
 
 // Güvenlik
@@ -72,6 +72,35 @@ function sanitizeInput($input) {
 
 function formatDate($date) {
     return date('d.m.Y', strtotime($date));
+}
+
+function formatDateTurkish($date) {
+    $months = [
+        1 => 'Ocak', 2 => 'Şubat', 3 => 'Mart', 4 => 'Nisan',
+        5 => 'Mayıs', 6 => 'Haziran', 7 => 'Temmuz', 8 => 'Ağustos',
+        9 => 'Eylül', 10 => 'Ekim', 11 => 'Kasım', 12 => 'Aralık'
+    ];
+    
+    $timestamp = strtotime($date);
+    $day = date('d', $timestamp);
+    $month = (int)date('m', $timestamp);
+    $year = date('Y', $timestamp);
+    
+    return $day . ' ' . $months[$month] . ' ' . $year;
+}
+
+function formatMonthYearTurkish($date) {
+    $months = [
+        1 => 'Ocak', 2 => 'Şubat', 3 => 'Mart', 4 => 'Nisan',
+        5 => 'Mayıs', 6 => 'Haziran', 7 => 'Temmuz', 8 => 'Ağustos',
+        9 => 'Eylül', 10 => 'Ekim', 11 => 'Kasım', 12 => 'Aralık'
+    ];
+    
+    $timestamp = strtotime($date);
+    $month = (int)date('m', $timestamp);
+    $year = date('Y', $timestamp);
+    
+    return $months[$month] . ' ' . $year;
 }
 
 function formatTime($time) {

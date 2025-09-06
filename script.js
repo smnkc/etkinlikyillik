@@ -20,6 +20,72 @@ function closeEventModal() {
     document.getElementById('eventForm').reset();
 }
 
+// Event List Modal Fonksiyonları
+function openEventListModal(date) {
+    const formattedDate = formatDateForDisplay(date);
+    document.getElementById('eventListTitle').textContent = `${formattedDate} - Etkinlikler`;
+    
+    // Etkinlikleri yükle
+    loadEventsForDate(date);
+    
+    document.getElementById('eventListModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+    
+    // Yeni etkinlik eklemek için tarihi sakla
+    window.currentEventDate = date;
+}
+
+function closeEventListModal() {
+    document.getElementById('eventListModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function openAddEventFromList() {
+    closeEventListModal();
+    openEventModal(window.currentEventDate);
+}
+
+function loadEventsForDate(date) {
+    fetch(`api/get_event.php?date=${date}`)
+        .then(response => response.json())
+        .then(data => {
+            const content = document.getElementById('eventListContent');
+            if (data.success && data.events.length > 0) {
+                content.innerHTML = data.events.map(event => `
+                    <div class="event-list-item">
+                        <div class="event-list-title">${event.title}</div>
+                        ${event.event_time ? `<div class="event-list-time"><i class="fas fa-clock"></i> ${event.event_time}</div>` : ''}
+                        ${event.description ? `<div class="event-list-description">${event.description}</div>` : ''}
+                        <div class="event-list-user"><i class="fas fa-user"></i> ${event.username}</div>
+                        ${event.can_delete ? `
+                            <button class="event-delete-btn" onclick="deleteEventFromList(${event.id})" title="Sil">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } else {
+                content.innerHTML = '<p style="text-align: center; color: #718096;">Bu tarihte etkinlik bulunmuyor.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('eventListContent').innerHTML = '<p style="text-align: center; color: #e53e3e;">Etkinlikler yüklenirken hata oluştu.</p>';
+        });
+}
+
+function deleteEventFromList(eventId) {
+    if (confirm('Bu etkinliği silmek istediğinizden emin misiniz?')) {
+        deleteEvent(eventId);
+    }
+}
+
+function formatDateForDisplay(dateString) {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('tr-TR', options);
+}
+
 // Modal dışına tıklayınca kapat
 window.onclick = function(event) {
     const modal = document.getElementById('eventModal');
@@ -76,6 +142,18 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Normal tıklama - etkinlik detaylarını göster
             showEventDetails(eventId);
+        }
+        
+        // Takvim günü tıklama işlemi
+        if (e.target.closest('.calendar-day') && !e.target.closest('.add-event-btn')) {
+            const calendarDay = e.target.closest('.calendar-day');
+            const date = calendarDay.dataset.date;
+            
+            if (date && calendarDay.classList.contains('has-events')) {
+                openEventListModal(date);
+            } else if (date) {
+                openEventModal(date);
+            }
         }
     });
 });

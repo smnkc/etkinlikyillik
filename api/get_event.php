@@ -11,6 +11,58 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 try {
+    // Tarih parametresi varsa o tarihteki tüm etkinlikleri getir
+    if (isset($_GET['date'])) {
+        $date = $_GET['date'];
+        
+        // Tarih formatını kontrol et
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            echo json_encode(['success' => false, 'message' => 'Geçersiz tarih formatı.']);
+            exit;
+        }
+        
+        // O tarihteki tüm etkinlikleri getir
+        $stmt = $pdo->prepare("
+            SELECT e.*, u.username 
+            FROM events e 
+            JOIN users u ON e.user_id = u.id 
+            WHERE e.event_date = ?
+            ORDER BY e.event_time ASC, e.created_at ASC
+        ");
+        $stmt->execute([$date]);
+        $events = $stmt->fetchAll();
+        
+        // Etkinlikleri formatla
+        $formatted_events = [];
+        foreach ($events as $event) {
+            $can_delete = false;
+            if (isLoggedIn()) {
+                $can_delete = ($event['user_id'] == $_SESSION['user_id']) || isAdmin();
+            }
+            
+            $formatted_events[] = [
+                'id' => $event['id'],
+                'title' => $event['title'],
+                'description' => $event['description'],
+                'event_date' => $event['event_date'],
+                'event_time' => $event['event_time'],
+                'formatted_date' => formatDate($event['event_date']),
+                'formatted_time' => $event['event_time'] ? formatTime($event['event_time']) : null,
+                'username' => $event['username'],
+                'user_id' => $event['user_id'],
+                'can_delete' => $can_delete
+            ];
+        }
+        
+        echo json_encode([
+            'success' => true,
+            'events' => $formatted_events,
+            'date' => $date
+        ]);
+        exit;
+    }
+    
+    // ID parametresi varsa tek etkinlik getir
     $event_id = (int)($_GET['id'] ?? 0);
     
     if ($event_id <= 0) {

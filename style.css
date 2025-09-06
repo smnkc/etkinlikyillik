@@ -251,12 +251,14 @@ body {
 .calendar-day {
     background: white;
     min-height: 120px;
+    max-height: 120px;
     padding: 8px;
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .calendar-day:hover {
@@ -279,7 +281,33 @@ body {
 }
 
 .calendar-day.has-events {
-    background: #f0fff4;
+    background: #dc3545;
+    color: white;
+    border: 2px solid #c82333;
+}
+
+.calendar-day.has-events .day-number {
+    color: white;
+    font-weight: bold;
+}
+
+.calendar-day.has-events .event-count {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    z-index: 2;
+    line-height: 1;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .day-number {
@@ -294,11 +322,7 @@ body {
 }
 
 .events {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    overflow: hidden;
+    display: none;
 }
 
 .event {
@@ -310,6 +334,9 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .event:hover {
@@ -327,6 +354,8 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
 }
 
 .event-user {
@@ -335,29 +364,7 @@ body {
 }
 
 .add-event-btn {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    background: #38a169;
-    color: white;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    opacity: 0;
-}
-
-.calendar-day:hover .add-event-btn {
-    opacity: 1;
-}
-
-.add-event-btn:hover {
-    background: #2f855a;
-    transform: scale(1.1);
+    display: none;
 }
 
 /* Modal Stilleri */
@@ -371,6 +378,81 @@ body {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
+}
+
+/* Event List Modal Özel Stilleri */
+
+.event-list-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.event-list-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.event-list-item:hover {
+    background: #e9ecef;
+}
+
+.event-list-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #2d3748;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.event-list-time {
+    color: #667eea;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.event-list-description {
+    color: #4a5568;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.event-list-user {
+    color: #718096;
+    font-size: 0.8rem;
+}
+
+.event-delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.event-delete-btn:hover {
+    background: #c53030;
+    transform: scale(1.1);
 }
 
 .modal-content {
@@ -403,6 +485,34 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.modal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.add-event-header-btn {
+    background: #48bb78;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+}
+
+.add-event-header-btn:hover {
+    background: #38a169;
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .modal-header h3 {
@@ -472,6 +582,51 @@ body {
         display: flex;
     }
     
+    /* Event List Modal Mobile Styles */
+    .event-list-modal .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        max-height: 90vh;
+        padding: 15px;
+    }
+    
+    .event-list-modal .modal-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .event-list-modal .event-list-item {
+        padding: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .event-list-modal .event-list-title {
+        font-size: 1rem;
+    }
+    
+    .event-list-modal .event-list-time {
+        font-size: 0.8rem;
+    }
+    
+    .event-list-modal .event-list-description {
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+    
+    .event-list-modal .event-list-user {
+        font-size: 0.75rem;
+    }
+    
+    .event-list-modal .event-delete-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        min-height: 32px;
+    }
+    
+    .add-event-header-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+    
     .header-content {
         flex-direction: column;
         text-align: center;
@@ -530,6 +685,14 @@ body {
     .calendar-day {
         min-height: 80px;
         padding: 4px;
+    }
+    
+    .calendar-day.has-events .event-count {
+        font-size: 0.85rem;
+        width: 18px;
+        height: 18px;
+        bottom: 3px;
+        right: 3px;
     }
     
     .day-name {
@@ -607,10 +770,62 @@ body {
         border-radius: 2px;
     }
     
-    .add-event-btn {
-        width: 20px;
-        height: 20px;
+
+    
+    .calendar-day.has-events .event-count {
+        font-size: 0.75rem;
+        width: 16px;
+        height: 16px;
+        bottom: 2px;
+        right: 2px;
+    }
+    
+    /* Event List Modal Small Screen Styles */
+    .event-list-modal .modal-content {
+        width: 98%;
+        margin: 2% auto;
+        padding: 10px;
+    }
+    
+    .event-list-modal .modal-header {
+        padding: 10px 0;
+    }
+    
+    .event-list-modal .modal-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .event-list-modal .event-list-item {
+        padding: 10px;
+        margin-bottom: 6px;
+    }
+    
+    .event-list-modal .event-list-title {
+        font-size: 0.95rem;
+    }
+    
+    .event-list-modal .event-list-time {
+        font-size: 0.75rem;
+    }
+    
+    .event-list-modal .event-list-description {
+        font-size: 0.8rem;
+        margin-top: 3px;
+    }
+    
+    .event-list-modal .event-list-user {
         font-size: 0.7rem;
+    }
+    
+    .event-list-modal .event-delete-btn {
+        padding: 5px 8px;
+        font-size: 0.75rem;
+        min-height: 30px;
+    }
+    
+    .add-event-header-btn {
+        padding: 5px 8px;
+        font-size: 11px;
     }
     
     .month-year-selector {

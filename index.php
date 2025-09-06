@@ -163,7 +163,9 @@ foreach ($events as $event) {
                     echo '<div class="day-number">' . $day . '</div>';
                     
                     if ($hasEvents) {
-                        echo '<div class="events">';
+                        $eventCount = count($eventsByDate[$day]);
+                        echo '<div class="event-count">' . $eventCount . '</div>';
+                        echo '<div class="events" style="display: none;">';
                         foreach ($eventsByDate[$day] as $event) {
                             $timeStr = $event['event_time'] ? formatTime($event['event_time']) : '';
                             echo '<div class="event" data-event-id="' . $event['id'] . '" title="' . sanitizeInput($event['title']) . ' - ' . sanitizeInput($event['username']) . '">';
@@ -218,6 +220,26 @@ foreach ($events as $event) {
         </div>
     </div>
     <?php endif; ?>
+
+    <!-- Event List Modal -->
+    <div id="eventListModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="eventListTitle">Etkinlikler</h3>
+                <div class="modal-header-actions">
+                    <?php if (isLoggedIn()): ?>
+                    <span class="add-event-header-btn" onclick="openAddEventFromList()" title="Yeni Etkinlik Ekle">+ Yeni</span>
+                    <?php endif; ?>
+                    <span class="close" onclick="closeEventListModal()">&times;</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="eventListContent" class="event-list-content">
+                    <!-- Etkinlikler buraya yüklenecek -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
